@@ -49,6 +49,8 @@ dependencies {
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
 
+   // implementation 'org.apache.httpcomponents:httpclient:4.5.9'
+
     implementation 'com.ramkishorevs.graphqlretrofitconverter:graphqlconverter:1.0.0'
 
     implementation 'com.google.code.gson:gson:2.8.5'

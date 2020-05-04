@@ -1,7 +1,10 @@
 package com.incampus.graphql_testing;
 
+import com.google.gson.JsonObject;
 import com.ramkishorevs.graphqlconverter.converter.GraphQuery;
 import com.ramkishorevs.graphqlconverter.converter.QueryContainerBuilder;
+
+import org.json.JSONObject;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -17,13 +20,13 @@ import retrofit2.http.Query;
 public interface Api {
 
     @POST("graphql/")
-    @GraphQuery("filename")
+   // @GraphQuery("filename")
     @Headers({
-            "content-type:application/json",
+            "Content-Type: application/json",
             "x-hasura-admin-secret:incampus"
     })
-    Call<ResponseBody> login(
-            @Body QueryContainerBuilder query
+    Call<JsonObject> login(
+           @Body JsonObject jsonObject
             );
 
 }

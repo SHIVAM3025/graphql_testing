@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(new Interceptor() {
             @Override
-            public Response intercept(Interceptor.Chain chain) throws IOException {
+            public Response intercept(Chain chain) throws IOException {
                 Request original = chain.request();
 
                 Request request = original.newBuilder()
@@ -59,30 +59,36 @@ public class MainActivity extends AppCompatActivity {
         OkHttpClient client = httpClient.build();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://incampus-test.herokuapp.com/v1/")
-                .addConverterFactory(GraphQLConverter.create(this))
+                .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
 
         Api apiInterface =retrofit.create(Api.class);
         QueryContainerBuilder queryContainer = new QueryContainerBuilder();
            // Call<Response> hello = RetrofitClient.getInstance(this).getApi().login();
-        Call<ResponseBody> register =apiInterface.login(queryContainer);
+
+       // String string ="query MyQuery { User { course}}";
+
+        JSONObject jsonObject =new JSONObject();
+        try {
+            jsonObject.put("query","query MyQuery { User { course}}");
+            Toast.makeText(this, "haha", Toast.LENGTH_SHORT).show();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObject jsonObject1 = new JsonObject();
+        jsonObject1.addProperty("query","query MyQuery { User { course}}");
 
 
-        register.enqueue(new Callback<ResponseBody>() {
+        Call<JsonObject> register =apiInterface.login(jsonObject1);
+
+        register.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+            public void onResponse(Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
                 if(response.isSuccessful())
                 {
-                    //Toast.makeText(MainActivity.this, "Hooray!!!!!", Toast.LENGTH_SHORT).show();
-
-                    JSONObject jsonObject = null;
-                    try {
-                        jsonObject = new JSONObject(response.body().toString());
-                    } catch (JSONException e) {
-                        Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
-                    }
+                    Toast.makeText(MainActivity.this, "Hooray!!!!!", Toast.LENGTH_SHORT).show();
 
                     mtext.setText(response.body().toString());
 
@@ -94,8 +100,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(MainActivity.this, t.getMessage(),Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(MainActivity.this,"HELLO\n"+ t.getMessage(),Toast.LENGTH_SHORT).show();
             }
         });
 
